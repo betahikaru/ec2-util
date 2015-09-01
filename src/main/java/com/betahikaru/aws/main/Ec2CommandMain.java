@@ -19,7 +19,7 @@ public class Ec2CommandMain {
 			parser.printUsage(System.out);
 			System.exit(1);
 		}
-		options.getCommand().execute(options);
-		System.exit(0);
+		int result = options.getCommand().execute(options);
+		System.exit(result);
 	}
 }

@@ -18,17 +18,19 @@ public class Ec2StartCommand implements Ec2SubCommand {
 	/**
 	 * Start Ec2 Instance. Realease EIP for Ec2 Instance. Disassociate EIP.
 	 */
-	public void execute(Ec2CommandOptions options) throws FileNotFoundException {
+	public int execute(Ec2CommandOptions options) throws FileNotFoundException {
 		System.out.println(getClass().getName());
 		String name = options.getName();
 		if (name != null) {
-			startByName(options);
+			int result = startByName(options);
+			return result;
 		} else {
 			System.err.println("Less options.");
+			return 1;
 		}
 	}
 
-	private void startByName(Ec2CommandOptions options) throws FileNotFoundException {
+	private int startByName(Ec2CommandOptions options) throws FileNotFoundException {
 		String name = options.getName();
 		InputStream inputStream = new FileInputStream(new File(options.getCredentialsPath()));
 		AmazonEC2 ec2 = AwsEc2Client.getEc2(inputStream);
@@ -38,7 +40,7 @@ public class Ec2StartCommand implements Ec2SubCommand {
 		String instanceId = instance.getInstanceId();
 		if (instanceId == null) {
 			System.err.println("Not exists instance (name = " + name + ").");
-			System.exit(1);
+			return 2;
 		} else {
 			System.out.println("Exists instance (id = " + instanceId + ")");
 		}
@@ -62,8 +64,10 @@ public class Ec2StartCommand implements Ec2SubCommand {
 			} catch (AmazonServiceException e) {
 				AwsEc2Client.releaseAddress(ec2, address);
 				System.out.println("Released Address (" + publicIp + ")");
+				return 2;
 			}
 		}
+		return 0;
 	}
 
 	private static void waitForStartingInstance() {

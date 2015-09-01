@@ -17,7 +17,7 @@ public class Ec2StopCommand implements Ec2SubCommand {
 	/**
 	 * Stop Ec2 Instance. Realease EIP for Ec2 Instance. Disassociate EIP.
 	 */
-	public void execute(Ec2CommandOptions options) throws FileNotFoundException {
+	public int execute(Ec2CommandOptions options) throws FileNotFoundException {
 		System.out.println(getClass().getName());
 		String name = options.getName();
 		InputStream inputStream = new FileInputStream(new File(options.getCredentialsPath()));
@@ -29,7 +29,7 @@ public class Ec2StopCommand implements Ec2SubCommand {
 		String publicIp = instance.getPublicIpAddress();
 		if (instanceId == null) {
 			System.err.println("Not exists instance (name = " + name + ").");
-			System.exit(1);
+			return 2;
 		} else {
 			System.out.println("Exists instance (id = " + instanceId + ")");
 		}
@@ -50,6 +50,7 @@ public class Ec2StopCommand implements Ec2SubCommand {
 		} else {
 			System.out.println("No EIP.");
 		}
+		return 0;
 	}
 
 
