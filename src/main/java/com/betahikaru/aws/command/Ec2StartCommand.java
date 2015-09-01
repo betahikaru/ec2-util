@@ -37,13 +37,12 @@ public class Ec2StartCommand implements Ec2SubCommand {
 
 		// Check Exists Instance
 		Instance instance = AwsEc2Client.findInstanceByName(ec2, name);
-		String instanceId = instance.getInstanceId();
-		if (instanceId == null) {
+		if (instance == null) {
 			System.err.println("Not exists instance (name = " + name + ").");
 			return 2;
-		} else {
-			System.out.println("Exists instance (id = " + instanceId + ")");
 		}
+		String instanceId = instance.getInstanceId();
+		System.out.println("Exists instance (id = " + instanceId + ")");
 
 		// Start Ec2 Instance
 		InstanceStateChange stateChange = AwsEc2Client.startInstance(ec2, instanceId);

@@ -25,14 +25,13 @@ public class Ec2StopCommand implements Ec2SubCommand {
 
 		// Check Exists Instance
 		Instance instance = AwsEc2Client.findInstanceByName(ec2, name);
-		String instanceId = instance.getInstanceId();
-		String publicIp = instance.getPublicIpAddress();
-		if (instanceId == null) {
+		if (instance == null) {
 			System.err.println("Not exists instance (name = " + name + ").");
 			return 2;
-		} else {
-			System.out.println("Exists instance (id = " + instanceId + ")");
 		}
+		String instanceId = instance.getInstanceId();
+		String publicIp = instance.getPublicIpAddress();
+		System.out.println("Exists instance (id = " + instanceId + ")");
 
 		// Stop Ec2 Instance
 		InstanceStateChange stateChange = AwsEc2Client.stopInstance(ec2, instanceId);
@@ -52,6 +51,5 @@ public class Ec2StopCommand implements Ec2SubCommand {
 		}
 		return 0;
 	}
-
 
 }

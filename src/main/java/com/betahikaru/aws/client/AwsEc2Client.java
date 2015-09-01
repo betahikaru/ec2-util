@@ -51,6 +51,15 @@ public class AwsEc2Client {
 		return ec2;
 	}
 
+	/**
+	 * Search Ec2 Instance by Name tag.
+	 * 
+	 * @param ec2
+	 * @param targetName
+	 *            Search Keyword for Name tag
+	 * @return Instance with Name tag equals targetName. If it does't found,
+	 *         then return null.
+	 */
 	public static Instance findInstanceByName(AmazonEC2 ec2, String targetName) {
 		DescribeInstancesResult instanceResult = ec2.describeInstances();
 		List<Reservation> reservations = instanceResult.getReservations();
