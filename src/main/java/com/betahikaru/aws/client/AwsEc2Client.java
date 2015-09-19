@@ -1,13 +1,7 @@
 package com.betahikaru.aws.client;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.Properties;
 
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.model.Address;
@@ -30,24 +24,13 @@ import com.amazonaws.services.ec2.model.StartInstancesResult;
 import com.amazonaws.services.ec2.model.StopInstancesRequest;
 import com.amazonaws.services.ec2.model.StopInstancesResult;
 import com.amazonaws.services.ec2.model.Tag;
+import com.betahikaru.aws.util.ConfigProvider;
 
 public class AwsEc2Client {
 
-	public static AmazonEC2 getEc2(InputStream inputStream) {
-		Properties credentialsProperty = new Properties();
-		try {
-			credentialsProperty.load(inputStream);
-		} catch (IOException e) {
-			System.err.println("load property");
-		}
-		String region = credentialsProperty.getProperty("aws.region");
-		String accessKey = credentialsProperty.getProperty("aws.access_key_id");
-		String secretKey = credentialsProperty.getProperty("aws.secret_access_key");
-
-		BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
-		AmazonEC2 ec2 = new AmazonEC2Client(credentials);
-		ec2.setRegion(Region.getRegion(Regions.valueOf(region)));
-
+	public static AmazonEC2 getEc2() {
+		AmazonEC2 ec2 = new AmazonEC2Client(ConfigProvider.getCredential());
+		ec2.setRegion(ConfigProvider.getDefaultRegion());
 		return ec2;
 	}
 

@@ -11,8 +11,11 @@ import com.amazonaws.services.ec2.model.Address;
 import com.amazonaws.services.ec2.model.DomainType;
 import com.amazonaws.services.ec2.model.Instance;
 import com.amazonaws.services.ec2.model.InstanceStateChange;
+import com.amazonaws.services.route53.AmazonRoute53;
 import com.betahikaru.aws.client.AwsEc2Client;
+import com.betahikaru.aws.client.AwsRoute53Client;
 import com.betahikaru.aws.command.option.Ec2CommandOptions;
+import com.betahikaru.aws.util.ConfigProvider;
 
 public class Ec2StartCommand implements Ec2SubCommand {
 	/**
@@ -33,7 +36,8 @@ public class Ec2StartCommand implements Ec2SubCommand {
 	private int startByName(Ec2CommandOptions options) throws FileNotFoundException {
 		String name = options.getName();
 		InputStream inputStream = new FileInputStream(new File(options.getCredentialsPath()));
-		AmazonEC2 ec2 = AwsEc2Client.getEc2(inputStream);
+		ConfigProvider.loadConfigure(inputStream);
+		AmazonEC2 ec2 = AwsEc2Client.getEc2();
 
 		// Check Exists Instance
 		Instance instance = AwsEc2Client.findInstanceByName(ec2, name);
@@ -48,7 +52,7 @@ public class Ec2StartCommand implements Ec2SubCommand {
 		InstanceStateChange stateChange = AwsEc2Client.startInstance(ec2, instanceId);
 		AwsEc2Client.showStateChange(stateChange, "Starting Instance");
 
-		// Allocate and Associate Address
+		// Allocate Address
 		DomainType domainType = (instance.getVpcId() == null) ? DomainType.Standard : DomainType.Vpc;
 		Address address = AwsEc2Client.allocateAddress(ec2, domainType);
 		String publicIp = address.getPublicIp();
@@ -58,8 +62,21 @@ public class Ec2StartCommand implements Ec2SubCommand {
 			waitForStartingInstance();
 
 			try {
+				// Associate Address
 				String associateAddress = AwsEc2Client.associateAddress(ec2, address, instanceId);
 				System.out.println("Associated Address(" + publicIp + ", " + associateAddress + ")");
+
+				String domain = options.getDomain();
+				if (domain != null) {
+					// Attach Domain to EIP
+					AmazonRoute53 route53 = AwsRoute53Client.getRoute53();
+					String attachedDomain = AwsRoute53Client.attachDomainToEip(route53, publicIp, domain);
+					if (attachedDomain != null) {
+						System.out.println("Attach domain : " + attachedDomain);
+					} else {
+						System.err.println("Not Found Available Hosted Zone for specified Domain(" + domain + ")");
+					}
+				}
 			} catch (AmazonServiceException e) {
 				AwsEc2Client.releaseAddress(ec2, address);
 				System.out.println("Released Address (" + publicIp + ")");

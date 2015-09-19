@@ -11,6 +11,7 @@ import com.amazonaws.services.ec2.model.Instance;
 import com.amazonaws.services.ec2.model.InstanceStateChange;
 import com.betahikaru.aws.client.AwsEc2Client;
 import com.betahikaru.aws.command.option.Ec2CommandOptions;
+import com.betahikaru.aws.util.ConfigProvider;
 
 public class Ec2StopCommand implements Ec2SubCommand {
 
@@ -21,7 +22,8 @@ public class Ec2StopCommand implements Ec2SubCommand {
 		System.out.println(getClass().getName());
 		String name = options.getName();
 		InputStream inputStream = new FileInputStream(new File(options.getCredentialsPath()));
-		AmazonEC2 ec2 = AwsEc2Client.getEc2(inputStream);
+		ConfigProvider.loadConfigure(inputStream);
+		AmazonEC2 ec2 = AwsEc2Client.getEc2();
 
 		// Check Exists Instance
 		Instance instance = AwsEc2Client.findInstanceByName(ec2, name);

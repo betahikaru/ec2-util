@@ -20,18 +20,24 @@ public class Ec2CommandOptions {
 		return command;
 	}
 
-	@Option(name = "-n", aliases = "--name", usage = "xxxx")
+	@Option(name = "-n", aliases = "--name", usage = "Name of Instance")
 	private String name;
 
 	public String getName() {
 		return name;
 	}
 
-	@Option(name = "-c", aliases = "--credentials-path", usage = "yyy")
+	@Option(name = "-c", aliases = "--credentials-path", usage = "Path to Credentials File")
 	private String credentialsPath = "conf/credentials.properties";
 
 	public String getCredentialsPath() {
 		return credentialsPath;
 	}
 
+	@Option(name = "-d", aliases = "--domain", usage = "Sub Domain to attach")
+	private String domain;
+
+	public String getDomain() {
+		return domain;
+	}
 }
