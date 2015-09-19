@@ -4,7 +4,7 @@ ec2-util reduces steps to use AWS EC2, than AWS Console.
 - You don't need to allocate / associate / disassociate / release EIP to click Console.
 
 ec2-util provides following features.
-- Start EC2 Instance, allocate EIP, and associate EIP to EC2 Instance.
+- Start EC2 Instance, allocate EIP, and associate EIP to EC2 Instance, finally , to create DNS recorde SubDomain ```-d``` option.
 - Stop EC2 Instance, disassociate EIP from EC2 Instance, and release EIP.
 
 
@@ -25,6 +25,8 @@ Exists instance (id = i-7eddbb8d)
 Starting Instance (i-7eddbb8c: stopped=>pending)
 Allocated Address(54.64.40.43, eipalloc-71a87f15)
 Associated Address(54.64.40.43, eipassoc-ff90b09b)
+Hosted Zone Id: Z1F2R7YCCWCCCC
+Attach domain : dev.betahikaru.com
 ```
 
 ### Stop Ec2 Instance
