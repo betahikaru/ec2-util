@@ -26,10 +26,10 @@ public class AwsRoute53Client {
 		return route53;
 	}
 
-	public static String attachDomainToEip(AmazonRoute53 route53, String publicIp, String domain) {
+	public static ChangeInfo attachDomainToEip(AmazonRoute53 route53, String publicIp, String domain) {
 		String hostedZoneId = findHostedZoneForDomain(route53, domain);
 		if (hostedZoneId != null) {
-			System.out.println("Hosted Zone Id: " + hostedZoneId);
+			System.out.println("Found HostedZone's Id(" + hostedZoneId + ")");
 		} else {
 			return null;
 		}
@@ -37,8 +37,7 @@ public class AwsRoute53Client {
 		ResourceRecordSet resourceRecordSet = generateResourceRecordSetForARecord(publicIp, domain);
 		ChangeInfo changeinfo = AwsRoute53Client.changeResourceRecordSet(route53, hostedZoneId, resourceRecordSet,
 				ChangeAction.CREATE);
-		System.out.println(changeinfo);
-		return domain;
+		return changeinfo;
 	}
 
 	public static String findHostedZoneForDomain(AmazonRoute53 route53, String domain) {

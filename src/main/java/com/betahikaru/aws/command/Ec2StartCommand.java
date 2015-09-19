@@ -12,6 +12,7 @@ import com.amazonaws.services.ec2.model.DomainType;
 import com.amazonaws.services.ec2.model.Instance;
 import com.amazonaws.services.ec2.model.InstanceStateChange;
 import com.amazonaws.services.route53.AmazonRoute53;
+import com.amazonaws.services.route53.model.ChangeInfo;
 import com.betahikaru.aws.client.AwsEc2Client;
 import com.betahikaru.aws.client.AwsRoute53Client;
 import com.betahikaru.aws.command.option.Ec2CommandOptions;
@@ -70,9 +71,9 @@ public class Ec2StartCommand implements Ec2SubCommand {
 				if (domain != null) {
 					// Attach Domain to EIP
 					AmazonRoute53 route53 = AwsRoute53Client.getRoute53();
-					String attachedDomain = AwsRoute53Client.attachDomainToEip(route53, publicIp, domain);
-					if (attachedDomain != null) {
-						System.out.println("Attach domain : " + attachedDomain);
+					ChangeInfo attachedResult = AwsRoute53Client.attachDomainToEip(route53, publicIp, domain);
+					if (attachedResult != null) {
+						System.out.println("Attached domain(" + domain + ")");
 					} else {
 						System.err.println("Not Found Available Hosted Zone for specified Domain(" + domain + ")");
 					}
@@ -87,6 +88,7 @@ public class Ec2StartCommand implements Ec2SubCommand {
 	}
 
 	private static void waitForStartingInstance() {
+		System.out.println("... Please wait for starting instance ...");
 		try {
 			Thread.sleep(2 * 60 * 1000);
 		} catch (InterruptedException e) {

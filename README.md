@@ -24,9 +24,10 @@ com.betahikaru.aws.command.Ec2StartCommand
 Exists instance (id = i-7eddbb8d)
 Starting Instance (i-7eddbb8c: stopped=>pending)
 Allocated Address(54.64.40.43, eipalloc-71a87f15)
+... Please wait for starting instance ...
 Associated Address(54.64.40.43, eipassoc-ff90b09b)
-Hosted Zone Id: Z1F2R7YCCWCCCC
-Attach domain : dev.betahikaru.com
+Found HostedZone's Id(Z1F2R7Y0JWC0OC)
+Attached domain(dev.betahikaru.com)
 ```
 
 ### Stop Ec2 Instance
